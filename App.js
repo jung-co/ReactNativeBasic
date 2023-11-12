@@ -35,7 +35,7 @@ export default function App() {
           <View style={styles.day}>
             <Text style={styles.temp}>27</Text>
             <Text style={styles.description}>SUNNY</Text>
-          </View>
+          </View> 
         </ScrollView>
       </View>
   );

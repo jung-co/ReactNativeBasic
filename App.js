@@ -1,9 +1,30 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ScrollView, Dimensions } from 'react-native';
+import * as Location from 'expo-location'
+import React, { useState, useEffect } from 'react';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function App() {
+  const [city, setCity] = useState("Loading...");
+  const [location, setLocation] = useState(null);
+  const [ok, setOk] = useState(true);
+  const ask = async() => { 
+    const {granted} = await Location.requestForegroundPermissionsAsync();
+    if(!granted){
+      setOk(false); //허가 정보에 따라 다른 화면 노출가능
+    }
+    const {coords:{latitude, longitude}} = await Location.getCurrentPositionAsync({accuracy: 5});
+    const location = Location.reverseGeocodeAsync(
+      {latitude, longitude}, 
+      {useGoogleMaps: false}
+    );
+    setCity(location[0].city);
+  }
+  useEffect(() => {
+    ask()
+  }, []);
+
   return (
     // <View style={styles.container}>
     //   <Text>Hello! I made a RN App!</Text>
@@ -12,7 +33,7 @@ export default function App() {
         // {/* <StatusBar style="light"></StatusBar> */}
       <View style={styles.container}>
         <View style={styles.city}>
-          <Text style={styles.cityName}>Seoul</Text>
+          <Text style={styles.cityName}>{city}</Text>
         </View>
         <ScrollView
           horizontal
